@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.epam.ordering.api.Constants;
 import com.epam.ordering.api.client.OrderItemClient;
 import com.epam.ordering.api.dataaccess.OrderRepository;
 import com.epam.ordering.api.dto.OrderItemDto;
@@ -28,34 +29,36 @@ import com.epam.ordering.api.entity.Order;
 public class OrderService {
 
 	private static final Logger log = LoggerFactory.getLogger(OrderService.class);
-	
+
 	@Autowired
 	private OrderRepository orderRepository;
 
 	@Autowired
 	private OrderItemClient orderItemClient;
-	
+
 	@Transactional
 	public Response<?> addOrderDetails(OrderRequest orderRequest) {
 		Response<?> response = null;
 		int productId = orderRequest.getProductId();
-		ResponseEntity<OrderItemDto> orderItemDtoResponse = orderItemClient.getActionableDsl(productId);
-		if(orderItemDtoResponse.getStatusCode().equals(HttpStatus.OK)) {
-			OrderItemDto orderItemDto = orderItemDtoResponse.getBody();
-			Order order = new Order(orderRequest.getCustomerName(), LocalDateTime.now(),orderItemDto.getProductCode(), orderRequest.getShippingAddress(), 100);
-			if(productId>0) {
+		if (productId > 0) {
+			ResponseEntity<OrderItemDto> orderItemDtoResponse = orderItemClient.getActionableDsl(productId);
+			if (orderItemDtoResponse.getStatusCode().equals(HttpStatus.OK)) {
+				OrderItemDto orderItemDto = orderItemDtoResponse.getBody();
+				Order order = new Order(orderRequest.getCustomerName(), LocalDateTime.now(),
+						orderItemDto.getProductCode(), orderRequest.getShippingAddress(), orderRequest.getQuantity()*orderItemDto.getPrice());
 				order = orderRepository.save(order);
-				log.info("Item Saved Successfully, Order orderId: {}",order.getId());
-				response = new Response<>(new Result("Item Saved Successfully, Order orderId: "+order.getId()), HttpStatus.BAD_REQUEST);
-			}else {
+				log.info("@@@  Item Saved Successfully, Order orderId: {}", order.getId());
+				response = new Response<>(new Result(Constants.Success), HttpStatus.OK);
+
+			} else {
+				log.debug("@@@ Unable to fetch Item details., Order orderId: {}", orderItemDtoResponse.getBody());
 				response = new Response<>(new Result("Invalid"), HttpStatus.BAD_REQUEST);
 			}
-		}else {
-			log.debug("Unable to fetch Item details., Order orderId: {}",orderItemDtoResponse.getBody());
-			response = new Response<>(new Result("Invalid"), HttpStatus.BAD_REQUEST);
+		} else {
+			log.error("@@@ Invalid productId : {}", productId);
+			response = new Response<>(new Result(Constants.INVALID_QUANTITY), HttpStatus.BAD_REQUEST);
 		}
-		
 		return response;
 	}
-	
+
 }

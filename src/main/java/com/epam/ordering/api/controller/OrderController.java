@@ -1,7 +1,5 @@
 package com.epam.ordering.api.controller;
 
-import static com.epam.ordering.api.Constants.INVALID_INPUT;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +36,11 @@ public class OrderController {
 			@RequestBody @ApiParam(required = true, value = "Order to be add") OrderRequest orderRequest) {
 
 		if (orderRequest != null) {
-
 			Response<?> response = orderService.addOrderDetails(orderRequest);
 			return new ResponseEntity<>(response.getResult(), response.getStatus());
 		} else {
-			log.error(Constants.INVALID_INPUT.getCode());
-			return new ResponseEntity<>(new Result(INVALID_INPUT.getCode()), HttpStatus.BAD_REQUEST);
+			log.error(Constants.INVALID_INPUT);
+			return new ResponseEntity<>(new Result(Constants.INVALID_INPUT), HttpStatus.BAD_REQUEST);
 		}
 	}
 	

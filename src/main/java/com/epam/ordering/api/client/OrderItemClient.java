@@ -7,10 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.epam.ordering.api.dto.OrderItemDto;
-
 import feign.Headers;
 
-@FeignClient(name="order-item-service", url="${order.item.url}", configuration=AppClientConfig.class)
+/**
+ * FeignClient to fetch RestApi to call Rest-API will send request and response
+ * 
+ * @author vikash
+ *
+ */
+@FeignClient(name = "order-item-service", configuration = AppClientConfig.class)
 @Headers("Content-Type: application/json")
 public interface OrderItemClient {
 

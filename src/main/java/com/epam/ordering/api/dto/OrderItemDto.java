@@ -4,6 +4,7 @@ public class OrderItemDto {
 
 	private String productCode;
 	private String productName;
+	private double price;
 	private Integer Quantity;
 
 	public String getProductCode() {
@@ -28,6 +29,14 @@ public class OrderItemDto {
 
 	public void setQuantity(Integer quantity) {
 		Quantity = quantity;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	@Override
