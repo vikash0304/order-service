@@ -20,5 +20,5 @@ import feign.Headers;
 public interface OrderItemClient {
 
 	@RequestMapping(method = RequestMethod.GET, path = "${order.item.url.get}")
-	public ResponseEntity<OrderItemDto> getActionableDsl(@PathVariable("itemId") int itemId);
+	public ResponseEntity<OrderItemDto> getOrderItem(@PathVariable("itemId") int itemId);
 }

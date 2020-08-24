@@ -41,7 +41,7 @@ public class OrderService {
 		Response<?> response = null;
 		int productId = orderRequest.getProductId();
 		if (productId > 0) {
-			ResponseEntity<OrderItemDto> orderItemDtoResponse = orderItemClient.getActionableDsl(productId);
+			ResponseEntity<OrderItemDto> orderItemDtoResponse = orderItemClient.getOrderItem(productId);
 			if (orderItemDtoResponse.getStatusCode().equals(HttpStatus.OK)) {
 				OrderItemDto orderItemDto = orderItemDtoResponse.getBody();
 				Order order = new Order(orderRequest.getCustomerName(), LocalDateTime.now(),
